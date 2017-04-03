@@ -1,0 +1,50 @@
+close all; clc; close all;
+
+%sometimes manual editing of ascii characters at beginningof txt file
+%is necessary
+filename = 'ts1\t2.txt';
+data = textread(filename, '', 'delimiter', '\t','emptyvalue', NaN);
+timeStamp = data(:,1);
+comp_X = data(:,2);
+comp_Y = data(:,3);
+kal_X = data(:,4);
+kal_Y = data(:,5);
+DMP_X = data(:,6);
+DMP_Y = data(:,7);
+gyro_X = data(:,8);
+gyro_Y = data(:,9);
+roll = data(:,10);
+pitch = data(:,11);
+
+tout = timeStamp;
+figure(1);
+plot(tout,DMP_X,'.r'); hold on;
+plot(tout,kal_X,'.k');hold on;
+plot(tout,comp_X,'.g'); 
+ylabel('Angle (degrees)');
+xlabel('Time (seconds)');
+title('Roll');
+legend('DMP','Kalman','Complementary')
+grid on;
+ 
+figure(2);
+plot(tout,DMP_Y,'.r'); hold on;
+plot(tout,kal_Y,'.k'); hold on;
+plot(tout,comp_Y,'.g'); 
+ylabel('Angle (degrees)');
+xlabel('Time (seconds)');
+title('Pitch');
+legend('DMP','Kalman','Complementary')
+grid on;
+
+errCX = immse(comp_X(5,:), DMP_X(5,:));
+errCY = immse(comp_Y(5,:), DMP_Y(5,:));
+errKX = immse(kal_X(5,:), DMP_X(5,:));
+errKY = immse(kal_Y(5,:), DMP_Y(5,:));
+
+fprintf('\n The complementary roll mean-squared error is %0.4f\n', errCX);
+fprintf('\n The complementary pitch mean-squared error is %0.4f\n', errCY);
+fprintf('\n The kalman roll mean-squared error is %0.4f\n', errKX);
+fprintf('\n The kalman pitch mean-squared error is %0.4f\n', errKY);
+
+
